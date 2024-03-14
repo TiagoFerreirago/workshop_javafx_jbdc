@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.utils.Alerts;
@@ -40,14 +41,17 @@ public class MainViewController implements Initializable {
 	}
 	
 	public void onMenuItemDepartmentAction() {
-		loadView2("/gui/DepartmentList.fxml");
+		loadView("/gui/DepartmentList.fxml", (DepartmentViewController control) -> {
+			control.setDepartmentViewService(new DepartmentViewService());
+			control.viewUpdate();
+		});
 	}
 	
 	public void onMenuItemAboutAction() {
-		loadView("/gui/About.fxml");
+		loadView("/gui/About.fxml", x -> {});
 	}
 	
-	private synchronized void loadView(String absolutName) {
+	private synchronized <T> void loadView(String absolutName, Consumer<T> initialize) {
 		
 		try {
 		FXMLLoader loader= new FXMLLoader(getClass().getResource(absolutName));
@@ -63,7 +67,8 @@ public class MainViewController implements Initializable {
 		mainVBox.getChildren().add(mainMenu); // adicionando os filhos do Vbox principal
 		mainVBox.getChildren().addAll(newVBox.getChildren());// adicionando a pagina de about passada no paramentro
 		
-		
+		T controller = loader.getController();
+		initialize.accept(controller);
 		
 		}
 		catch (IOException e) {
@@ -71,29 +76,4 @@ public class MainViewController implements Initializable {
 		}
 	}
 	
-private synchronized void loadView2(String absolutName) {
-		
-		try {
-		FXMLLoader loader= new FXMLLoader(getClass().getResource(absolutName));
-		VBox newVBox= loader.load();
-		
-		//chama a cena principal
-		Scene mainScene = Main.getMainScene();
-		//pegando o elemento principal, para acessar o Vbox e fazer uma atribuição aos filhos
-		VBox mainVBox = (VBox)((ScrollPane)mainScene.getRoot()).getContent();
-		Node mainMenu = mainVBox.getChildren().get(0);//primeiro filho da panela principal
-		mainVBox.getChildren().clear();//limpando o campo de filhos
-		
-		mainVBox.getChildren().add(mainMenu); // adicionando os filhos do Vbox principal
-		mainVBox.getChildren().addAll(newVBox.getChildren());// adicionando a pagina de about passada no paramentro
-		
-		DepartmentViewController ct = loader.getController();
-		ct.setDepartmentViewService(new DepartmentViewService());
-		ct.viewUpdate();
-		}
-		catch (IOException e) {
-			Alerts.showAlert("IOException" ,"Error loading view", e.getMessage(), AlertType.ERROR);
-		}
-	}
-
 }
