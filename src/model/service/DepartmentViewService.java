@@ -11,7 +11,7 @@ public class DepartmentViewService {
 	DepartmentDao dao = DaoFactory.createDepartmentDao();
 	
 	public List<Department>findAll(){
-		List<Department> list = dao.findAll();
-		return list;
+	
+		return dao.findAll();
 	}
 }

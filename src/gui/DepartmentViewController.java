@@ -1,18 +1,27 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.utils.Alerts;
+import gui.utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Department;
 import model.service.DepartmentViewService;
@@ -33,9 +42,10 @@ public class DepartmentViewController implements Initializable {
 	@FXML
 	
 	private ObservableList<Department> obsList;
-	
-	public void onNewBtAction() {
-		System.out.println("Initialize button");
+	@FXML
+	public void onNewBtAction(ActionEvent event) {
+		Stage parentStage = Utils.currentStage(event);
+		createDialogForm(parentStage, "/gui/DepartmentForm.fxml");
 	}
 	
 	
@@ -57,6 +67,7 @@ public class DepartmentViewController implements Initializable {
 	}
 	
 	
+	
 	public void viewUpdate() {
 		if(service == null) {
 			throw new IllegalStateException("Service null");
@@ -64,6 +75,29 @@ public class DepartmentViewController implements Initializable {
 		List<Department>list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		departmentView.setItems(obsList);
+	}
+	//Criar uma pagina de dialogo que é um stage dentro do outro
+	private void createDialogForm(Stage parentStage, String currentView) {
+	
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(currentView));
+			Pane pane = loader.load();//painel carregando a view
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Enter department Data");
+			//criar um cena dentro da outra com o painel como paramentro
+			dialogStage.setScene(new Scene(pane));
+			//a tela nao pode ser redimensionada
+			dialogStage.setResizable(false);
+			//definir o Stage Pai
+			dialogStage.initOwner(parentStage);
+			//a tela principal nao pode ser acessada por enquanto que a pagina secundaria estiver aberta
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+		} catch (IOException e) {
+			Alerts.showAlert("IO Exception", "", currentView, null);
+		}
+		
 	}
 
 }
