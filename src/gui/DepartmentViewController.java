@@ -45,7 +45,8 @@ public class DepartmentViewController implements Initializable {
 	@FXML
 	public void onNewBtAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm(parentStage, "/gui/DepartmentForm.fxml");
+		Department obs = new Department();
+		createDialogForm(obs,parentStage, "/gui/DepartmentForm.fxml");
 	}
 	
 	
@@ -77,12 +78,16 @@ public class DepartmentViewController implements Initializable {
 		departmentView.setItems(obsList);
 	}
 	//Criar uma pagina de dialogo que é um stage dentro do outro
-	private void createDialogForm(Stage parentStage, String currentView) {
+	private void createDialogForm(Department obs, Stage parentStage, String currentView) {
 	
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(currentView));
 			Pane pane = loader.load();//painel carregando a view
 
+			DepartmentFormController controll = loader.getController();
+			controll.setDepartment(obs);
+			controll.updateData();
+			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter department Data");
 			//criar um cena dentro da outra com o painel como paramentro
