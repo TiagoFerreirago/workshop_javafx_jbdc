@@ -45,6 +45,7 @@ public class DepartmentViewController implements Initializable {
 	@FXML
 	public void onNewBtAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
+		//iniciaro formulario com o objeto vazio
 		Department obs = new Department();
 		createDialogForm(obs,parentStage, "/gui/DepartmentForm.fxml");
 	}
@@ -83,10 +84,11 @@ public class DepartmentViewController implements Initializable {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(currentView));
 			Pane pane = loader.load();//painel carregando a view
-
+			//pegando o controle da view
 			DepartmentFormController controll = loader.getController();
-			controll.setDepartment(obs);
-			controll.updateData();
+			controll.setDepartment(obs);//instanciando o objeto na view controller
+			controll.setDepartmentViewService(new DepartmentViewService());//instanciando o DepartmentViewService
+			controll.updateData(); //preenchendo o formulario id e name do objeto instaciado
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter department Data");
