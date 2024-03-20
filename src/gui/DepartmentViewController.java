@@ -89,6 +89,7 @@ public class DepartmentViewController implements Initializable, DataChangerListe
 			DepartmentFormController controll = loader.getController();
 			controll.setDepartment(obs);//instanciando o objeto na view controller
 			controll.setDepartmentViewService(new DepartmentViewService());//instanciando o DepartmentViewService
+			controll.subscribeDataChangeListener(this);
 			controll.updateData(); //preenchendo o formulario id e name do objeto instaciado
 			
 			Stage dialogStage = new Stage();
