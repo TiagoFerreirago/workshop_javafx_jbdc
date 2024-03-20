@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangerListener;
 import gui.utils.Alerts;
 import gui.utils.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.service.DepartmentViewService;
 
-public class DepartmentViewController implements Initializable {
+public class DepartmentViewController implements Initializable, DataChangerListener {
 
 	
 	private DepartmentViewService service;
@@ -104,6 +105,13 @@ public class DepartmentViewController implements Initializable {
 		} catch (IOException e) {
 			Alerts.showAlert("IO Exception", "", currentView, null);
 		}
+		
+	}
+
+
+	@Override
+	public void onDatachaged() {
+		viewUpdate();
 		
 	}
 

@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangerListener;
 import gui.utils.Alerts;
 import gui.utils.Constraints;
 import gui.utils.Utils;
@@ -23,6 +26,7 @@ public class DepartmentFormController implements Initializable {
 	
 	DepartmentViewService service;
 	
+	List<DataChangerListener> listChange= new ArrayList<>();
 	@FXML
 	private TextField txtId;
 	@FXML
@@ -33,7 +37,12 @@ public class DepartmentFormController implements Initializable {
 	private Button btSave;
 	@FXML
 	private Button btCancel;
+	
 	@FXML
+	public void onBtCancelAction(ActionEvent event) {
+		Utils.currentStage(event).close();
+	}
+	@FXML                 
 	public void onBtSaveAction(ActionEvent event) {
 		if(entity == null || service == null) {
 			throw new IllegalStateException("Entity or Service was null");
@@ -41,23 +50,29 @@ public class DepartmentFormController implements Initializable {
 		try {
 		entity = updateService();
 		service.saveOrUpdate(entity);
+		notifyDataChangeListeners();
 		Utils.currentStage(event).close();
 		}
 		catch(DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
-	
+	private void notifyDataChangeListeners() {
+	for (DataChangerListener listener : listChange) {
+		listener.onDatachaged();
+	}
+		
+	}
+	public void subscribeDataChangeListener(DataChangerListener listener) {
+		
+		listChange.add(listener);
+	}
 	// pegando o texto do campo de cadastro e passando para entidade
 	private Department updateService() {
 		Department obj = new Department();
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
 		obj.setName(txtName.getText());
 		return obj;
-	}
-	@FXML
-	public void onBtCancelAction(ActionEvent event) {
-		Utils.currentStage(event).close();
 	}
 	
 	public void setDepartment(Department entity) {
