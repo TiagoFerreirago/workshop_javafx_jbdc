@@ -106,7 +106,7 @@ public class SellerViewController implements Initializable, DataChangerListener 
 	//Criar uma pagina de dialogo que é um stage dentro do outro
 	private void createDialogForm(Seller obs, Stage parentStage, String currentView) {
 	
-		/*try {
+		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(currentView));
 			Pane pane = loader.load();//painel carregando a view
 			//pegando o controle da view
@@ -131,7 +131,7 @@ public class SellerViewController implements Initializable, DataChangerListener 
 		} catch (IOException e) {
 			Alerts.showAlert("IO Exception", "", currentView, null);
 		}
-		*/
+		
 	}
 
 
