@@ -32,6 +32,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.service.DepartmentViewService;
 import model.service.SellerViewService;
 
 public class SellerViewController implements Initializable, DataChangerListener {
@@ -112,7 +113,8 @@ public class SellerViewController implements Initializable, DataChangerListener 
 			//pegando o controle da view
 			SellerFormController controll = loader.getController();
 			controll.setSeller(obs);//instanciando o objeto na view controller
-			controll.setSellerViewService(new SellerViewService());//instanciando o SellerViewService
+			controll.setSellerViewServices(new SellerViewService(), new DepartmentViewService());//instanciando o SellerViewService
+			controll.loadAssociatedObjects();
 			controll.subscribeDataChangeListener(this);
 			controll.updateData(); //preenchendo o formulario id e name do objeto instaciado
 			
@@ -129,6 +131,7 @@ public class SellerViewController implements Initializable, DataChangerListener 
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "", currentView, null);
 		}
 		
